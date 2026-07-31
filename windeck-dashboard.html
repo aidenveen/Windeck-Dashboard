@@ -224,12 +224,16 @@
 
   /* ---------------- Grid & cards ---------------- */
   .grid { display: grid; gap: 18px; }
-  .grid-stats { grid-template-columns: repeat(4, 1fr); margin-bottom: 18px; }
   .grid-2 { grid-template-columns: 1.3fr 1fr; }
   .grid-2-rev { grid-template-columns: 1fr 1.3fr; }
   @media (max-width: 980px) {
-    .grid-stats { grid-template-columns: repeat(2, 1fr); }
     .grid-2, .grid-2-rev { grid-template-columns: 1fr; }
+  }
+
+  /* to-do preview tile: roughly a third of the body width */
+  .todo-preview-card { width: calc((100% - 36px) / 3); }
+  @media (max-width: 980px) {
+    .todo-preview-card { width: 100%; }
   }
 
   .card {
@@ -255,7 +259,7 @@
 
   .icon-btn {
     width: 30px; height: 30px;
-    border-radius: 10px;
+    border-radius: 999px;
     border: 1px solid var(--glass-light-border);
     background: var(--neutral-chip);
     display: flex; align-items: center; justify-content: center;
@@ -331,6 +335,30 @@
   .row-time { font-size: 12.5px; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
   .row-amt { font-size: 13.5px; font-weight: 700; white-space: nowrap; }
 
+  /* to-do checklist rows */
+  .todo-list { display: flex; flex-direction: column; }
+  .todo-item { display: flex; align-items: center; gap: 12px; padding: 10px 2px; border-bottom: 1px solid var(--card-line); }
+  .todo-item:last-child { border-bottom: none; }
+  .todo-check-wrap { display: flex; flex: 0 0 auto; cursor: pointer; }
+  .todo-check { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .todo-check-box {
+    width: 22px; height: 22px; flex: 0 0 auto; border-radius: 7px;
+    border: 1.5px solid var(--pastel-coral-ring);
+    background: rgba(255,255,255,.5);
+    display: flex; align-items: center; justify-content: center;
+    transition: background .12s ease, border-color .12s ease;
+  }
+  .todo-check-box svg { width: 13px; height: 13px; color: #fff; opacity: 0; stroke-width: 3; transition: opacity .12s ease; }
+  .todo-check:checked + .todo-check-box { background: var(--orange-2); border-color: var(--orange-2); }
+  .todo-check:checked + .todo-check-box svg { opacity: 1; }
+  .todo-check:focus-visible + .todo-check-box { outline: 2px solid var(--teal-2); outline-offset: 2px; }
+  .todo-item.is-saving { opacity: .55; }
+  .todo-item.is-saving .todo-check-wrap { cursor: default; pointer-events: none; }
+  .todo-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+  .todo-title { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity .12s ease; }
+  .todo-sub { font-size: 12px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .todo-item.is-done .todo-title { text-decoration: line-through; opacity: .6; }
+
   .badge {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 3px 9px; border-radius: 999px;
@@ -394,8 +422,8 @@
 
   /* weather tile */
   .weather-now { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
-  .weather-icon-lg { flex: 0 0 auto; color: var(--ink); }
-  .weather-icon-lg svg { width: 52px; height: 52px; }
+  .weather-icon-lg { flex: 0 0 auto; }
+  .weather-icon-lg svg { width: 58px; height: 58px; }
   .weather-temp-block { flex: 1 1 auto; min-width: 0; }
   .weather-temp { font-size: 32px; font-weight: 700; letter-spacing: -.5px; line-height: 1; }
   .weather-deg { font-size: 16px; font-weight: 600; color: var(--ink-soft); }
@@ -403,19 +431,23 @@
   .weather-daydate { text-align: right; flex: 0 0 auto; }
   .weather-day { font-size: 15px; font-weight: 700; }
   .weather-date { font-size: 11.5px; color: var(--ink-soft); }
-  .weather-meta {
-    display: flex; gap: 18px; padding: 13px 0;
-    border-top: 1px solid var(--card-line); border-bottom: 1px solid var(--card-line);
-    margin-bottom: 14px;
+  .weather-meta { display: flex; gap: 10px; margin-bottom: 14px; }
+  .weather-meta-item {
+    display: flex; align-items: center; gap: 9px; flex: 1 1 auto; min-width: 0;
+    background: rgba(255,255,255,.4); border: 1px solid var(--glass-light-border);
+    border-radius: 14px; padding: 10px 12px;
   }
-  .weather-meta-item { display: flex; align-items: center; gap: 9px; flex: 1 1 auto; min-width: 0; }
   .weather-meta-item svg { width: 19px; height: 19px; color: var(--ink-soft); flex: 0 0 auto; }
   .weather-meta-label { font-size: 10.5px; color: var(--ink-soft); font-weight: 600; }
   .weather-meta-value { font-size: 13.5px; font-weight: 700; }
-  .weather-forecast { display: flex; justify-content: space-between; gap: 4px; }
-  .weather-day-col { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1 1 0; min-width: 0; }
+  .weather-forecast { display: flex; justify-content: space-between; gap: 6px; }
+  .weather-day-col {
+    display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1 1 0; min-width: 0;
+    background: rgba(255,255,255,.32); border: 1px solid var(--glass-light-border);
+    border-radius: 14px; padding: 10px 4px 8px;
+  }
   .weather-day-col .wd-name { font-size: 10.5px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .3px; }
-  .weather-day-col svg { width: 22px; height: 22px; }
+  .weather-day-col svg { width: 24px; height: 24px; }
   .weather-day-col .wd-temps { font-size: 11px; font-weight: 700; white-space: nowrap; }
   .weather-day-col .wd-temps .lo { color: var(--ink-soft); font-weight: 500; }
 
@@ -437,6 +469,74 @@
   }
   .cta-pill:hover { filter: brightness(1.05); }
   .cta-pill svg { width: 14px; height: 14px; }
+
+  .cta-pill-teal {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 999px;
+    background: linear-gradient(135deg, var(--teal-1), var(--teal-2));
+    color: #fff; font-weight: 700; font-size: 12.5px;
+    border: none; cursor: pointer;
+    box-shadow: var(--shadow-sm);
+  }
+  .cta-pill-teal:hover { filter: brightness(1.05); }
+  .cta-pill-teal:disabled { opacity: .55; cursor: default; filter: none; }
+  .cta-pill-ghost {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 999px;
+    background: var(--neutral-chip); color: var(--ink);
+    font-weight: 700; font-size: 12.5px;
+    border: 1px solid var(--glass-light-border); cursor: pointer;
+  }
+  .cta-pill-ghost:hover { filter: brightness(.97); }
+
+  /* new to-do bubble */
+  .todo-add-overlay {
+    position: fixed; inset: 0; z-index: 60;
+    background: rgba(10,11,14,.35);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .todo-add-overlay[hidden] { display: none; }
+  .todo-add-bubble {
+    width: 100%; max-width: 380px;
+    background: var(--glass-light-bg-strong);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-light-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: 20px;
+  }
+  .todo-add-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .todo-add-head h3 { margin: 0; font-size: 15.5px; }
+  .todo-add-body { display: flex; flex-direction: column; gap: 14px; }
+  .todo-add-field { display: flex; flex-direction: column; gap: 6px; }
+  .todo-add-label { font-size: 11px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .3px; }
+  .todo-add-input {
+    width: 100%; font: inherit; font-size: 13.5px; color: var(--ink);
+    padding: 10px 12px; border-radius: 12px;
+    border: 1px solid var(--glass-light-border);
+    background: rgba(255,255,255,.55);
+    resize: none;
+  }
+  .todo-add-input:focus-visible { outline: 2px solid var(--teal-2); outline-offset: 1px; }
+  .todo-add-row { display: flex; gap: 8px; }
+  .todo-add-row .todo-add-input { flex: 1 1 auto; min-width: 0; }
+  .todo-add-row .todo-add-time { flex: 0 0 118px; }
+  /* stretch the native calendar/clock indicator over the whole field so any
+     click inside opens the picker, not just a click on the small glyph —
+     the input needs its own positioning context or the (absolutely
+     positioned) indicator balloons out to the nearest positioned ancestor,
+     e.g. the fixed-position bubble overlay, instead of staying inside it */
+  input[type="date"], input[type="time"] { position: relative; }
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+    opacity: 0; cursor: pointer;
+  }
+  .todo-add-error { font-size: 12px; color: var(--bad); font-weight: 600; }
+  .todo-add-error[hidden] { display: none; }
+  .todo-add-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
 
   .page-title { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; flex-wrap: wrap; gap: 8px; }
   .page-title h1 { font-size: 20px; margin: 0; }
@@ -526,34 +626,7 @@
 
     <!-- HOME -->
     <section class="tab-panel active" id="panel-home">
-      <div class="grid grid-stats">
-        <button type="button" class="card stat-tile stat-pastel stat-coral stat-tile-link" data-goto-tab="todos">
-          <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="m8.5 12.5 2.5 2.5 5-5"/></svg></div>
-          <div class="num" id="stat-todos-num">&ndash;</div>
-          <div class="label">Your open to-dos</div>
-          <div class="foot" id="stat-todos-foot">&nbsp;</div>
-        </button>
-        <button type="button" class="card stat-tile stat-pastel stat-gold stat-tile-link" data-goto-tab="schedule">
-          <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="3.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></div>
-          <div class="num" id="stat-today-num">&ndash;</div>
-          <div class="label">On today's schedule</div>
-          <div class="foot" id="stat-today-foot">&nbsp;</div>
-        </button>
-        <button type="button" class="card stat-tile stat-pastel stat-blue stat-tile-link" data-goto-tab="quoting">
-          <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5.5H9.5a3 3 0 0 0 0 6h5a3 3 0 0 1 0 6H6"/></svg></div>
-          <div class="num" id="stat-pipeline-num">&ndash;</div>
-          <div class="label">Your open pipeline</div>
-          <div class="foot" id="stat-pipeline-foot">&nbsp;</div>
-        </button>
-        <button type="button" class="card stat-tile stat-pastel stat-green stat-tile-link" data-goto-tab="jobs">
-          <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12" rx="2.5"/><path d="M8 7.5V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1.5"/></svg></div>
-          <div class="num" id="stat-jobs-num">&ndash;</div>
-          <div class="label">Your active jobs</div>
-          <div class="foot" id="stat-jobs-foot">&nbsp;</div>
-        </button>
-      </div>
-
-      <div class="grid grid-2">
+      <div class="grid grid-2" style="margin-bottom:18px;">
         <div class="card weather-card">
           <div class="card-head">
             <div><h2>Weather</h2><div class="hint">Winnipeg, MB</div></div>
@@ -587,6 +660,51 @@
             <div><h2>Job status</h2><div class="hint">Quoting, pending, active &amp; complete</div></div>
           </div>
           <div id="home-status-body"><div class="skeleton" style="height:120px;border-radius:16px;"></div></div>
+        </div>
+      </div>
+
+      <div class="card todo-preview-card list-card-full">
+        <div class="card-head">
+          <div><h2>Today's To-Dos</h2><div class="hint" id="todo-preview-hint">Open items due today</div></div>
+          <div class="actions">
+            <button type="button" class="icon-btn" id="todoAddOpen" title="Add a to-do" aria-label="Add a to-do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
+            <button type="button" class="icon-btn" data-goto-tab="todos" title="View all to-dos" aria-label="View all to-dos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+        <div id="todo-preview-body">
+          <div class="skeleton-row"><div class="skeleton" style="width:22px;height:22px;border-radius:7px;flex:0 0 auto;"></div><div class="lines"><div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:35%"></div></div></div>
+          <div class="skeleton-row"><div class="skeleton" style="width:22px;height:22px;border-radius:7px;flex:0 0 auto;"></div><div class="lines"><div class="skeleton" style="width:50%"></div><div class="skeleton" style="width:30%"></div></div></div>
+        </div>
+      </div>
+
+      <div class="todo-add-overlay" id="todoAddOverlay" hidden>
+        <div class="todo-add-bubble" role="dialog" aria-modal="true" aria-labelledby="todoAddTitle">
+          <div class="todo-add-head">
+            <h3 id="todoAddTitle">New To-Do</h3>
+            <button type="button" class="icon-btn" id="todoAddClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+          </div>
+          <div class="todo-add-body">
+            <label class="todo-add-field">
+              <span class="todo-add-label">What needs doing?</span>
+              <textarea id="todoAddName" class="todo-add-input" rows="2" maxlength="300" placeholder="e.g. Call Lester about the patio cover quote"></textarea>
+            </label>
+            <label class="todo-add-field">
+              <span class="todo-add-label">Due date</span>
+              <div class="todo-add-row">
+                <input type="date" id="todoAddDate" class="todo-add-input">
+                <input type="time" id="todoAddTime" class="todo-add-input todo-add-time">
+              </div>
+            </label>
+            <label class="todo-add-field">
+              <span class="todo-add-label">Job</span>
+              <select id="todoAddJob" class="todo-add-input"><option value="">No job</option></select>
+            </label>
+            <div class="todo-add-error" id="todoAddError" hidden></div>
+          </div>
+          <div class="todo-add-actions">
+            <button type="button" class="cta-pill-ghost" id="todoAddCancel">Cancel</button>
+            <button type="button" class="cta-pill-teal" id="todoAddSave">Add to-do</button>
+          </div>
         </div>
       </div>
     </section>
@@ -810,27 +928,56 @@
     };
   }
 
-  var QUERIES = {
-    quotes: {
+  /* Job picklist for the new-to-do bubble: every job Aiden has ever been PM
+     on (any pipeline stage), queried the same recency-independent way as the
+     other job scans above, so it isn't biased toward recently-created jobs. */
+  var PM_FIELD_ID = "22PPsdnE2CNA"; /* the "Project Manager" custom field on jobs */
+  function buildPmJobsQuery(pageToken) {
+    var args = { where: AIDEN_FILTER, size: 100 };
+    if (pageToken) args.page = pageToken;
+    return {
+      customField: {
+        "$": { id: PM_FIELD_ID },
+        customFieldValues: {
+          "$": args,
+          nodes: { job: { id: {}, name: {}, location: { formattedAddress: {}, contact: { firstName: {}, lastName: {} } } } },
+          count: {},
+          nextPage: {}
+        }
+      }
+    };
+  }
+
+  /* Draft/pending/approved quote documents, fully paginated — a size-80
+     recency-sorted sample was missing most older open quotes, which is why
+     the Job Status donut's Pending total was reading far too low. */
+  function buildQuotesQuery(pageToken) {
+    var args = {
+      where: { and: [
+        { "=": [{ field: "type" }, { value: "customerOrder" }] },
+        { "in": [{ field: "status" }, [{ value: "draft" }, { value: "pending" }, { value: "approved" }]] }
+      ] },
+      sortBy: [{ field: "createdAt", order: "desc" }],
+      size: 100
+    };
+    if (pageToken) args.page = pageToken;
+    return {
       organization: {
         "$": { id: ORG_ID },
         documents: {
-          "$": {
-            where: { and: [
-              { "=": [{ field: "type" }, { value: "customerOrder" }] },
-              { "in": [{ field: "status" }, [{ value: "draft" }, { value: "pending" }, { value: "approved" }]] }
-            ] },
-            sortBy: [{ field: "createdAt", order: "desc" }],
-            size: 80
-          },
+          "$": args,
           nodes: {
             id: {}, name: {}, number: {}, status: {}, price: {}, createdAt: {}, issueDate: {}, toName: {},
             job: { name: {}, number: {}, customFieldValues: { "$": { where: AIDEN_FILTER }, nodes: { value: {} } } }
           },
-          count: {}
+          count: {},
+          nextPage: {}
         }
       }
-    },
+    };
+  }
+
+  var QUERIES = {
     schedule: {
       membership: {
         "$": { id: MEMBERSHIP_ID },
@@ -957,6 +1104,44 @@
     return fetchPage(null);
   }
 
+  function fetchPmJobsPaged(opts) {
+    var merged = [];
+    var totalCount = 0;
+    var storedAt = null;
+    var pages = 0;
+    function fetchPage(token) {
+      return window.claude.mcp.callTool(SERVER, TOOL, { query: buildPmJobsQuery(token) }, opts).then(function (res) {
+        pages++;
+        var conn = res.payload.customField.customFieldValues;
+        merged = merged.concat(conn.nodes);
+        totalCount = conn.count;
+        if (storedAt === null) storedAt = (res.cache && res.cache.storedAt) || Date.now();
+        if (conn.nextPage && pages < 20) return fetchPage(conn.nextPage);
+        return { payload: { pmJobValues: { nodes: merged, count: totalCount } }, cache: { storedAt: storedAt } };
+      });
+    }
+    return fetchPage(null);
+  }
+
+  function fetchQuotesPaged(opts) {
+    var merged = [];
+    var totalCount = 0;
+    var storedAt = null;
+    var pages = 0;
+    function fetchPage(token) {
+      return window.claude.mcp.callTool(SERVER, TOOL, { query: buildQuotesQuery(token) }, opts).then(function (res) {
+        pages++;
+        var conn = res.payload.organization.documents;
+        merged = merged.concat(conn.nodes);
+        totalCount = conn.count;
+        if (storedAt === null) storedAt = (res.cache && res.cache.storedAt) || Date.now();
+        if (conn.nextPage && pages < 15) return fetchPage(conn.nextPage);
+        return { payload: { organization: { documents: { nodes: merged, count: totalCount } } }, cache: { storedAt: storedAt } };
+      });
+    }
+    return fetchPage(null);
+  }
+
   function query(name, opts) {
     if (!window.claude || !window.claude.mcp) {
       return Promise.reject({ code: "capability_disabled", message: "MCP not available" });
@@ -966,6 +1151,8 @@
     }
     if (name === "jobs") return fetchJobsPaged(opts);
     if (name === "pipelineStatus") return fetchPipelineStatusPaged(opts);
+    if (name === "pmJobs") return fetchPmJobsPaged(opts);
+    if (name === "quotes") return fetchQuotesPaged(opts);
     return window.claude.mcp.callTool(SERVER, TOOL, { query: QUERIES[name] }, opts);
   }
 
@@ -1058,9 +1245,6 @@
     if (!s.data) return;
     var nodes = s.data.membership.assignedTasks.nodes;
     var count = s.data.membership.assignedTasks.count;
-    var todayNodes = nodes.filter(function (t) { return (t.startsAt || "").slice(0, 10) === todayISO; });
-    document.getElementById("stat-today-num").textContent = todayNodes.length;
-    document.getElementById("stat-today-foot").textContent = count + " upcoming, assigned to you";
     fullBody.innerHTML = (s.status === "error" ? errorBanner(s.error, true) : "") + scheduleGrouped(nodes);
     if (s.status === "error") wireRetry(fullBody, "schedule");
     pill.textContent = count + " upcoming";
@@ -1081,24 +1265,143 @@
     }).join("") + '</div>';
   }
 
+  function todoPreviewRows(list) {
+    if (!list.length) return '<div class="empty-note">No to-dos due today. Nicely done.</div>';
+    return '<div class="todo-list">' + list.map(function (t) {
+      var sub = t.job ? escapeHtml(t.job.name) + " · #" + escapeHtml(t.job.number) : (t.description ? escapeHtml(t.description) : "No job linked");
+      return '<div class="todo-item" data-task-id="' + escapeHtml(t.id) + '">' +
+        '<label class="todo-check-wrap"><input type="checkbox" class="todo-check">' +
+        '<span class="todo-check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span></label>' +
+        '<div class="todo-main"><span class="todo-title">' + escapeHtml(t.name || "Untitled") + '</span><span class="todo-sub">' + sub + '</span></div>' +
+        '</div>';
+    }).join("") + '</div>';
+  }
+
+  function completeTask(taskId) {
+    return window.claude.mcp.callTool(SERVER, TOOL, {
+      query: { updateTask: { "$": { id: taskId, progress: 1 } } }
+    });
+  }
+
+  function createTodoTask(args) {
+    return window.claude.mcp.callTool(SERVER, TOOL, { query: { createTask: { "$": args } } });
+  }
+
+  /* ---------- new to-do bubble ---------- */
+  function setTodoAddSaving(saving) {
+    var btn = document.getElementById("todoAddSave");
+    btn.disabled = saving;
+    btn.textContent = saving ? "Adding…" : "Add to-do";
+  }
+  function openTodoAdd() {
+    var jobSel = document.getElementById("todoAddJob");
+    var sorted = aidenJobsCache.slice().sort(function (a, b) { return (a.label || "").localeCompare(b.label || ""); });
+    jobSel.innerHTML = '<option value="">No job</option>' + sorted.map(function (j) {
+      return '<option value="' + escapeHtml(j.id) + '">' + escapeHtml(j.label) + '</option>';
+    }).join("");
+    jobSel.value = "";
+    document.getElementById("todoAddName").value = "";
+    var dateInput = document.getElementById("todoAddDate");
+    dateInput.value = "";
+    dateInput.min = todayISO;
+    document.getElementById("todoAddTime").value = "";
+    var err = document.getElementById("todoAddError");
+    err.hidden = true; err.textContent = "";
+    setTodoAddSaving(false);
+    document.getElementById("todoAddOverlay").hidden = false;
+    document.getElementById("todoAddName").focus();
+  }
+  function closeTodoAdd() {
+    document.getElementById("todoAddOverlay").hidden = true;
+  }
+  document.getElementById("todoAddOpen").addEventListener("click", openTodoAdd);
+  document.getElementById("todoAddClose").addEventListener("click", closeTodoAdd);
+  document.getElementById("todoAddCancel").addEventListener("click", closeTodoAdd);
+  document.getElementById("todoAddOverlay").addEventListener("click", function (e) {
+    if (e.target.id === "todoAddOverlay") closeTodoAdd();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !document.getElementById("todoAddOverlay").hidden) closeTodoAdd();
+  });
+  document.getElementById("todoAddSave").addEventListener("click", function () {
+    var nameEl = document.getElementById("todoAddName");
+    var name = nameEl.value.trim();
+    var err = document.getElementById("todoAddError");
+    if (!name) {
+      err.textContent = "Enter what needs doing.";
+      err.hidden = false;
+      nameEl.focus();
+      return;
+    }
+    var dateVal = document.getElementById("todoAddDate").value;
+    var timeVal = document.getElementById("todoAddTime").value;
+    var jobId = document.getElementById("todoAddJob").value;
+    var args = { name: name, isToDo: true, assignedMembershipIds: [MEMBERSHIP_ID], notify: false };
+    if (dateVal) {
+      var t = timeVal || "12:00";
+      args.startDate = dateVal; args.startTime = t;
+      args.endDate = dateVal; args.endTime = t;
+    }
+    if (jobId) { args.targetType = "job"; args.targetId = jobId; }
+    else { args.targetType = "organization"; args.targetId = ORG_ID; }
+    err.hidden = true;
+    setTodoAddSaving(true);
+    createTodoTask(args).then(function () {
+      setTodoAddSaving(false);
+      closeTodoAdd();
+      load("todos", true);
+    }).catch(function (e2) {
+      setTodoAddSaving(false);
+      err.textContent = (e2 && e2.message) ? "Couldn't add to-do: " + e2.message : "Couldn't add to-do — try again.";
+      err.hidden = false;
+    });
+  });
+
+  document.addEventListener("change", function (e) {
+    var box = e.target.closest(".todo-check");
+    if (!box || !box.checked) return;
+    var item = box.closest(".todo-item");
+    if (!item) return;
+    item.classList.add("is-saving", "is-done");
+    completeTask(item.dataset.taskId).then(function () {
+      load("todos", true);
+    }).catch(function () {
+      box.checked = false;
+      item.classList.remove("is-saving", "is-done");
+      var hint = document.getElementById("todo-preview-hint");
+      if (hint) {
+        var prev = hint.textContent;
+        hint.textContent = "Couldn't update JobTread — try again.";
+        setTimeout(function () { hint.textContent = prev; }, 4000);
+      }
+    });
+  });
+
   on("todos", function (s) {
     var fullBody = document.getElementById("todos-full-body");
     var pill = document.getElementById("todos-count-pill");
     var updated = document.getElementById("todos-updated");
+    var previewBody = document.getElementById("todo-preview-body");
+    var previewHint = document.getElementById("todo-preview-hint");
     if (s.status === "error" && !s.data) {
       var b = errorBanner(s.error, true);
       fullBody.innerHTML = b;
       wireRetry(fullBody, "todos");
+      if (previewBody) { previewBody.innerHTML = b; wireRetry(previewBody, "todos"); }
       return;
     }
     if (!s.data) return;
     var nodes = s.data.membership.assignedTasks.nodes;
     var count = s.data.membership.assignedTasks.count;
-    document.getElementById("stat-todos-num").textContent = count;
-    document.getElementById("stat-todos-foot").textContent = count === 1 ? "1 needs attention" : "need attention";
     fullBody.innerHTML = (s.status === "error" ? errorBanner(s.error, true) : "") + todoRows(nodes);
     if (s.status === "error") wireRetry(fullBody, "todos");
     pill.textContent = count + " open";
+    var todayNodes = nodes.filter(function (t) { return (t.startsAt || "").slice(0, 10) === todayISO; });
+    if (previewHint) previewHint.textContent = todayNodes.length === 1 ? "1 due today" : todayNodes.length + " due today";
+    if (previewBody) {
+      previewBody.innerHTML = (s.status === "error" ? errorBanner(s.error, true) : "") + todoPreviewRows(todayNodes);
+      if (s.status === "error") wireRetry(previewBody, "todos");
+    }
     var stamp = s.storedAt ? timeAgo(s.storedAt) : "";
     updated.textContent = stamp ? "Updated " + stamp : "";
   });
@@ -1163,6 +1466,8 @@
       var b = errorBanner(s.error, true);
       quotingPipelineBody.innerHTML = b; wonBody.innerHTML = ""; listBody.innerHTML = b;
       wireRetry(quotingPipelineBody, "quotes"); wireRetry(listBody, "quotes");
+      homeStatusError = s.error;
+      renderJobStatusDonut();
       return;
     }
     if (!s.data) return;
@@ -1177,8 +1482,17 @@
     var pending = sumBy(openAiden, function (d) { return d.status === "pending"; });
     var total = draft.value + pending.value;
 
-    document.getElementById("stat-pipeline-num").textContent = fmtMoney(total);
-    document.getElementById("stat-pipeline-foot").textContent = openAiden.length + " open quotes";
+    /* Job Pipeline stage "Quoting"/"Pending" jobs almost never have a
+       job.projectedPrice set yet (that only gets populated once a budget
+       exists, later in the pipeline) — the dollar totals for those two
+       stages on the Home job-status donut come from these quote/proposal
+       document prices instead, which is why this handler also feeds
+       homeStatusValues rather than just the Quoting tab's own tiles. */
+    homeStatusValues.quoting = draft.value;
+    homeStatusValues.pending = pending.value;
+    homeStatusReady.quotes = true;
+    homeStatusError = null;
+    renderJobStatusDonut();
 
     var segs = [
       { label: "Pending", value: pending.value, count: pending.count, color: "var(--violet-1)" },
@@ -1195,7 +1509,7 @@
     wonBody.innerHTML = '<div style="display:flex;align-items:baseline;gap:10px;"><div style="font-size:26px;font-weight:700;">' + fmtMoney(wonTotal) + '</div><div class="hint" style="font-size:12.5px;">across ' + wonAiden.length + ' approved ' + (wonAiden.length === 1 ? "order" : "orders") + '</div></div>';
 
     listBody.innerHTML = (s.status === "error" ? errorBanner(s.error, true) : "") + quoteRows(openAiden) +
-      '<div class="empty-note">Scanned the ' + allNodes.length + ' most recent open/approved orders org-wide (of ' + fetchedTotal + ' total) to find yours &mdash; search JobTread directly for older quotes.</div>';
+      '<div class="empty-note">Matched against all ' + fetchedTotal + ' draft, pending &amp; recently-approved orders org-wide.</div>';
     if (s.status === "error") wireRetry(listBody, "quotes");
     pill.textContent = openAiden.length + " open";
     var stamp = s.storedAt ? timeAgo(s.storedAt) : "";
@@ -1203,24 +1517,27 @@
   });
 
   /* ---------- rendering: home job-status donut ---------- */
+  var aidenJobsCache = [];
   var homeStatusCounts = { quoting: null, pending: null, active: null, complete: null };
   var homeStatusValues = { quoting: 0, pending: 0, active: 0, complete: 0 };
-  var homeStatusReady = { jobs: false, pipelineStatus: false };
+  var homeStatusReady = { jobs: false, pipelineStatus: false, quotes: false };
   var homeStatusError = null;
   function renderJobStatusDonut() {
     var body = document.getElementById("home-status-body");
     if (!body) return;
     if (homeStatusError) { body.innerHTML = errorBanner(homeStatusError, false); return; }
-    /* Wait for both sources — jobs (Active) resolves in ~2 pages, but
-       pipelineStatus scans ~800 records across ~9 pages. Rendering as soon
-       as either arrives showed Active alone for several seconds before the
-       rest populated, which read as broken rather than loading. */
-    if (!homeStatusReady.jobs || !homeStatusReady.pipelineStatus) return;
+    /* Wait for all three sources — jobs (Active) resolves in ~2 pages,
+       pipelineStatus scans ~800 records across ~9 pages, and quotes now
+       paginates through every draft/pending/approved order org-wide.
+       Rendering as soon as one source arrives showed a partial chart for
+       several seconds before the rest populated, which read as broken
+       rather than loading. */
+    if (!homeStatusReady.jobs || !homeStatusReady.pipelineStatus || !homeStatusReady.quotes) return;
     var c = homeStatusCounts, v = homeStatusValues;
     var segs = [
-      { label: "Active", value: c.active || 0, amount: v.active || 0, color: "var(--teal-2)" },
-      { label: "Pending", value: c.pending || 0, amount: v.pending || 0, color: "var(--violet-1)" },
       { label: "Quoting", value: c.quoting || 0, amount: v.quoting || 0, color: "var(--orange-1)" },
+      { label: "Pending", value: c.pending || 0, amount: v.pending || 0, color: "var(--violet-1)" },
+      { label: "Active", value: c.active || 0, amount: v.active || 0, color: "var(--teal-2)" },
       { label: "Complete", value: c.complete || 0, amount: v.complete || 0, color: "var(--good)" }
     ];
     var total = segs.reduce(function (a, s) { return a + s.value; }, 0);
@@ -1241,19 +1558,21 @@
     if (!s.data) return;
     var nodes = s.data.pipelineStatusValues.nodes;
     var counts = { quoting: 0, pending: 0, complete: 0 };
-    var values = { quoting: 0, pending: 0, complete: 0 };
+    /* Quoting/Pending job.projectedPrice is almost always null this early in
+       the pipeline — their dollar totals come from the quotes source
+       instead (see on("quotes", ...)). Complete-stage jobs do have a real
+       projectedPrice by then, so that one's summed here as before. */
+    var completeValue = 0;
     nodes.forEach(function (n) {
       if (!n.job || isAidenPmJob({ customFieldValues: n.job.pmField }) !== true) return;
       var key = n.value === "Quoting" ? "quoting" : n.value === "Pending" ? "pending" : "complete";
       counts[key]++;
-      values[key] += n.job.projectedPrice || 0;
+      if (key === "complete") completeValue += n.job.projectedPrice || 0;
     });
     homeStatusCounts.quoting = counts.quoting;
     homeStatusCounts.pending = counts.pending;
     homeStatusCounts.complete = counts.complete;
-    homeStatusValues.quoting = values.quoting;
-    homeStatusValues.pending = values.pending;
-    homeStatusValues.complete = values.complete;
+    homeStatusValues.complete = completeValue;
     homeStatusReady.pipelineStatus = true;
     homeStatusError = null;
     renderJobStatusDonut();
@@ -1298,8 +1617,6 @@
       var j = n.job; j.stage = n.value;
       aidenJobs.push(j);
     });
-    document.getElementById("stat-jobs-num").textContent = aidenJobs.length;
-    document.getElementById("stat-jobs-foot").textContent = "Sold, Deposit Collected or Active";
     homeStatusCounts.active = aidenJobs.length;
     homeStatusValues.active = aidenJobs.reduce(function (a, j) { return a + (j.projectedPrice || 0); }, 0);
     homeStatusReady.jobs = true;
@@ -1311,6 +1628,19 @@
     pill.textContent = aidenJobs.length + " active";
     var stamp = s.storedAt ? timeAgo(s.storedAt) : "";
     updated.textContent = stamp ? "Updated " + stamp : "";
+  });
+
+  /* job picklist for the new-to-do bubble: every job Aiden has ever PM'd */
+  on("pmJobs", function (s) {
+    if (!s.data) return;
+    aidenJobsCache = s.data.pmJobValues.nodes.filter(function (n) { return n.job; }).map(function (n) {
+      var j = n.job;
+      var contact = j.location && j.location.contact;
+      var customer = contact ? (contact.firstName + (contact.lastName ? " " + contact.lastName : "")).trim() : "";
+      var addr = (j.location && j.location.formattedAddress) || "";
+      var label = customer && addr ? customer + " — " + addr : customer || addr || j.name;
+      return { id: j.id, label: label };
+    });
   });
 
   /* ---------- tabs ---------- */
@@ -1346,33 +1676,69 @@
     document.getElementById("dateline").textContent = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
   })();
 
-  /* ---------- weather (sample data — no live weather source connected) ---------- */
+  /* ---------- weather (refreshed hourly by a scheduled cloud routine) ---------- */
+  /* Colour weather glyphs, built from primitives (circles/ellipses/lines)
+     rather than hand-authored bezier paths, and computed at render time —
+     safer to get right than freehand path coordinates. Each icon gets a
+     unique id suffix so its gradients don't collide with the other icon
+     instances also on the page (the big current-conditions icon plus one
+     per forecast day). */
+  var weatherIconSeq = 0;
+  function sunGlyph(uid, cx, cy, r) {
+    var rays = [];
+    for (var i = 0; i < 8; i++) {
+      var a = (i * Math.PI) / 4;
+      var x1 = (cx + Math.cos(a) * (r + 2)).toFixed(1), y1 = (cy + Math.sin(a) * (r + 2)).toFixed(1);
+      var x2 = (cx + Math.cos(a) * (r + 5)).toFixed(1), y2 = (cy + Math.sin(a) * (r + 5)).toFixed(1);
+      rays.push('<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="#ffab3d" stroke-width="2" stroke-linecap="round"/>');
+    }
+    return rays.join("") + '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="url(#sun' + uid + ')"/>';
+  }
+  function cloudGlyph(uid, dx, dy, grad) {
+    return '<g transform="translate(' + dx + ',' + dy + ')" fill="url(#' + grad + uid + ')">' +
+      '<ellipse cx="9" cy="14" rx="4.2" ry="3.6"/>' +
+      '<ellipse cx="14.2" cy="12.3" rx="5.6" ry="4.8"/>' +
+      '<rect x="5.4" y="13.6" width="13.2" height="5.6" rx="2.8"/>' +
+      '</g>';
+  }
+  function dropGlyph(uid, cx, cy, s) {
+    return '<path transform="translate(' + cx + ',' + cy + ') scale(' + s + ')" ' +
+      'd="M0 0C-1.6 2-2.6 3.3-2.6 4.5A2.6 2.6 0 1 0 2.6 4.5C2.6 3.3 1.6 2 0 0Z" fill="url(#drop' + uid + ')"/>';
+  }
   function weatherIconSvg(type) {
-    var common = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+    var uid = "wi" + (weatherIconSeq++);
+    var defs = '<defs>' +
+      '<radialGradient id="sun' + uid + '" cx="35%" cy="32%" r="72%">' +
+        '<stop offset="0%" stop-color="#ffe28a"/><stop offset="55%" stop-color="#ffb648"/><stop offset="100%" stop-color="#ff8a3d"/>' +
+      '</radialGradient>' +
+      '<linearGradient id="cloudBack' + uid + '" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="#b8bfc9"/><stop offset="100%" stop-color="#8d95a3"/>' +
+      '</linearGradient>' +
+      '<linearGradient id="cloudFront' + uid + '" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="#eef1f5"/><stop offset="100%" stop-color="#d2d7e0"/>' +
+      '</linearGradient>' +
+      '<linearGradient id="drop' + uid + '" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="#7ec4ff"/><stop offset="100%" stop-color="#3a8fe0"/>' +
+      '</linearGradient>' +
+    '</defs>';
+    var body;
     if (type === "sun") {
-      return '<svg ' + common + '><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/></svg>';
+      body = sunGlyph(uid, 12, 12, 6.5);
+    } else if (type === "cloud") {
+      body = cloudGlyph(uid, -2.4, -2, "cloudBack") + cloudGlyph(uid, 1.2, 1.4, "cloudFront");
+    } else if (type === "rain") {
+      body = cloudGlyph(uid, 0, -2.5, "cloudFront") + dropGlyph(uid, 9.5, 18, 0.9) + dropGlyph(uid, 14, 19.2, 0.9);
+    } else {
+      body = '<g transform="translate(-3,-3) scale(0.72)">' + sunGlyph(uid, 12, 12, 6.5) + '</g>' + cloudGlyph(uid, 1.6, 2.2, "cloudFront");
     }
-    if (type === "cloud") {
-      return '<svg ' + common + '><path d="M7 18h10a4 4 0 0 0 .5-7.97A5.5 5.5 0 0 0 7.1 8.5 4.5 4.5 0 0 0 7 18Z"/></svg>';
-    }
-    if (type === "rain") {
-      return '<svg ' + common + '><path d="M7 15h10a4 4 0 0 0 .5-7.97A5.5 5.5 0 0 0 7.1 5.5 4.5 4.5 0 0 0 7 15Z"/><path d="M8.5 18.5v2M12 18.5v2M15.5 18.5v2"/></svg>';
-    }
-    return '<svg ' + common + '><circle cx="8" cy="7.5" r="2.6"/><path d="M8 3.3v1.3M3.3 8h1.3M4.4 4.4l.9.9"/><path d="M9.5 19h8.5a3.6 3.6 0 0 0 .4-7.2 4.8 4.8 0 0 0-9.3-1.4A4 4 0 0 0 9.5 19Z"/></svg>';
+    return '<svg viewBox="0 0 24 24">' + defs + body + '</svg>';
   }
-  function weatherCondLabel(type) {
-    if (type === "sun") return "Sunny";
-    if (type === "rain") return "Rain";
-    if (type === "cloud") return "Cloudy";
-    return "Partly Cloudy";
-  }
-  /* Pulled from The Weather Network (theweathernetwork.com) for Winnipeg,
-     MB as of the last time this dashboard was published — the artifact
-     sandbox can't call external weather APIs on its own, so this is a
-     manual snapshot, not a live auto-refreshing feed. Ask Claude to
-     refresh it with current data, or to set up a recurring scheduled
-     refresh, whenever you want it updated. */
-  var WEATHER_SNAPSHOT_DATE = "2026-07-30";
+  /* Pulled from The Weather Network (theweathernetwork.com) for Winnipeg, MB.
+     The artifact sandbox can't call external weather APIs on its own, so
+     this data is written here by a scheduled cloud routine (hourly,
+     7am-6pm Mon-Fri) that fetches fresh conditions and republishes this
+     file — see the "Windeck Dashboard Weather Refresh" routine. */
+  var WEATHER_SNAPSHOT_AT = "July 30, 2026, 12:00 PM";
   function renderWeather() {
     var nowTemp = 25, nowCondLabel = "Clear", nowIcon = "sun";
     var conditions = ["cloud-sun", "cloud-sun", "sun", "rain", "rain", "sun", "sun"];
@@ -1398,7 +1764,7 @@
     document.getElementById("weather-forecast").innerHTML = html;
 
     var snap = document.getElementById("weather-snapshot-note");
-    if (snap) snap.textContent = "From The Weather Network — snapshot as of " + WEATHER_SNAPSHOT_DATE + ", not a live feed.";
+    if (snap) snap.textContent = "From The Weather Network — retrieved " + WEATHER_SNAPSHOT_AT + ".";
   }
   renderWeather();
 
@@ -1438,7 +1804,7 @@
       }
       hideDiag();
       setJtStatus(null, "JobTread · loading…");
-      ["jobs", "quotes", "schedule", "todos", "pipelineStatus"].forEach(function (k) { load(k, false); });
+      ["jobs", "quotes", "schedule", "todos", "pipelineStatus", "pmJobs"].forEach(function (k) { load(k, false); });
     }).catch(function (err) {
       setJtStatus(false, "JobTread · error");
       showDiag(diagHtml(
