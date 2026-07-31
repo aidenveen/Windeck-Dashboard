@@ -1738,12 +1738,12 @@
      this data is written here by a scheduled cloud routine (hourly,
      7am-6pm Mon-Fri) that fetches fresh conditions and republishes this
      file — see the "Windeck Dashboard Weather Refresh" routine. */
-  var WEATHER_SNAPSHOT_AT = "July 30, 2026, 12:00 PM";
+  var WEATHER_SNAPSHOT_AT = "July 31, 2026, 12:35 PM";
   function renderWeather() {
-    var nowTemp = 25, nowCondLabel = "Clear", nowIcon = "sun";
-    var conditions = ["cloud-sun", "cloud-sun", "sun", "rain", "rain", "sun", "sun"];
-    var his = [30, 28, 30, 33, 25, 22, 25];
-    var los = [17, 18, 21, 22, 15, 13, 16];
+    var nowTemp = 26, nowCondLabel = "Clear", nowIcon = "sun", nowHumidity = "51%", nowWind = "19 km/h";
+    var conditions = ["sun", "cloud-sun", "rain", "rain", "cloud-sun", "rain", "rain"];
+    var his = [29, 28, 33, 25, 22, 25, 26];
+    var los = [17, 21, 22, 15, 13, 18, 17];
     var now = new Date();
 
     document.getElementById("weather-icon-now").innerHTML = weatherIconSvg(nowIcon);
@@ -1751,8 +1751,8 @@
     document.getElementById("weather-cond-now").textContent = nowCondLabel;
     document.getElementById("weather-day-now").textContent = now.toLocaleDateString(undefined, { weekday: "long" });
     document.getElementById("weather-date-now").textContent = now.toLocaleDateString(undefined, { month: "long", day: "numeric" });
-    document.getElementById("weather-humidity").textContent = "79%";
-    document.getElementById("weather-wind").textContent = "11 km/h";
+    document.getElementById("weather-humidity").textContent = nowHumidity;
+    document.getElementById("weather-wind").textContent = nowWind;
 
     var html = "";
     for (var i = 0; i < 7; i++) {
